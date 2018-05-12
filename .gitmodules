@@ -1,0 +1,3 @@
+[submodule "code/extern/generic_cmake/generic"]
+	path = code/extern/generic_cmake/generic
+	url = https://github.com/user706/generic.git
