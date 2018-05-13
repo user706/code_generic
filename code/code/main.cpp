@@ -28,33 +28,31 @@ private:
 
 
 
-
-template <typename FP, FP fp, typename R, class C, typename ...A>
-constexpr inline auto makFor(C& object, R (C::* const)(A...) const) noexcept
-{
-    return gnr::forwarder<R(A...), sizeof(decltype(gnr::mem_fun<FP, fp>(object)))>(gnr::mem_fun<FP, fp>(object));
+#define GEN_MAK_FOR(OBJECT, MEMFUN)                                           \
+template <typename FP, FP fp, typename R, class C, typename ...A>             \
+constexpr inline auto makFor(OBJECT, MEMFUN) noexcept                         \
+{                                                                             \
+    return gnr::forwarder<R(A...), sizeof(decltype(gnr::mem_fun<FP, fp>(object)))>(gnr::mem_fun<FP, fp>(object)); \
 }
 
-template <typename FP, FP fp, typename R, class C, typename ...A>
-constexpr inline auto makFor(C& object, R (C::* const)(A...) const volatile) noexcept
-{
-    return gnr::forwarder<R(A...), sizeof(decltype(gnr::mem_fun<FP, fp>(object)))>(gnr::mem_fun<FP, fp>(object));
-}
+GEN_MAK_FOR(C&       object, R (C::* const)(A...) const)
+GEN_MAK_FOR(C&       object, R (C::* const)(A...) const volatile)
+GEN_MAK_FOR(C&       object, R (C::* const)(A...)       volatile)
+GEN_MAK_FOR(C&       object, R (C::* const)(A...))
 
-template <typename FP, FP fp, typename R, class C, typename ...A>
-constexpr inline auto makFor(C& object, R (C::* const)(A...) volatile) noexcept
-{
-    return gnr::forwarder<R(A...), sizeof(decltype(gnr::mem_fun<FP, fp>(object)))>(gnr::mem_fun<FP, fp>(object));
-}
-
-template <typename FP, FP fp, typename R, class C, typename ...A>
-constexpr inline auto makFor(C& object, R (C::* const)(A...)) noexcept
-{
-    return gnr::forwarder<R(A...), sizeof(decltype(gnr::mem_fun<FP, fp>(object)))>(gnr::mem_fun<FP, fp>(object));
-}
+GEN_MAK_FOR(const C& object, R (C::* const)(A...) const)
+GEN_MAK_FOR(const C& object, R (C::* const)(A...) const volatile)
+GEN_MAK_FOR(const C& object, R (C::* const)(A...)       volatile)
+GEN_MAK_FOR(const C& object, R (C::* const)(A...))
 
 template <typename FP, FP fp, class C>
 constexpr inline auto makeForwarder(C& object) noexcept
+{
+  return makFor<FP, fp>(object, fp);
+}
+
+template <typename FP, FP fp, class C>
+constexpr inline auto makeForwarder(const C& object) noexcept
 {
   return makFor<FP, fp>(object, fp);
 }
@@ -98,6 +96,13 @@ int main()
 	f_refinc_memfun();
 	std::cout << i << std::endl;
 	std::cout << "sizeof(f_refinc_memfun): " << sizeof(f_refinc_memfun)        << std::endl;
+    }
+
+    std::cout << "\n\n";
+
+    {
+	const A adder(1);
+	auto  f = makeForwarder<MEM_FUN(A::add_offset_twice)>(adder);
     }
     return 0;
 }
