@@ -1,2 +1,2 @@
 add_subdirectory(extern)
-add_subdirectory(code)
+add_subdirectory(intern)
