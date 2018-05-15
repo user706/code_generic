@@ -6,7 +6,7 @@
 
 #include "measure.hpp"  
 
-#include "memfun.hpp"
+#include "generic/memfun.hpp"
 
 #define MAX_REPEAT 100000
 

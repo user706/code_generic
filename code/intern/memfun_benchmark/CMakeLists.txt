@@ -8,7 +8,8 @@ target_include_directories(base
 
 target_link_libraries(base
   INTERFACE
-    Boost::boost)
+  Boost::boost
+  gnr)
 
 file(GLOB HEADER *.hpp *.h)
 
