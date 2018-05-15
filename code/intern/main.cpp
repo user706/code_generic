@@ -43,7 +43,7 @@ private:
 template <typename FP, FP fp, typename R, class C, typename ...A>             \
 constexpr inline auto makFor(OBJECT, MEMFUN) noexcept                         \
 {                                                                             \
-    return gnr::forwarder<R(A...), sizeof(decltype(gnr::mem_fun<FP, fp>(object)))>(gnr::mem_fun<FP, fp>(object)); \
+    return gnr::forwarder<R(A...), sizeof(decltype(gnr::memfun<FP, fp>(object)))>(gnr::memfun<FP, fp>(object)); \
 }
 
 GEN_MAK_FOR(C&       object, R (C::* const)(A...) const)
@@ -91,12 +91,12 @@ int main()
     {
 	A adder(1);
 	
-	auto add1 = gnr::mem_fun<MEM_FUN(A::add)>(adder);
+	auto add1 = gnr::memfun<MEMFUN(A::add)>(adder);
 	std::cout << add1(1) << std::endl;
 
 	gnr::forwarder<int(int), sizeof(A)>                          f_add1(adder);                // store entire adder in forwarder (use operator()(int))
 	gnr::forwarder<int(int), sizeof(decltype(std::cref(adder)))> f_add1_ref(std::cref(adder)); // don't store entire adder in forwarder, but only a cref to it
-	gnr::forwarder<int(int), sizeof(add1)>                       f_add1_memfun(add1);          // mem_fun is similar to cref
+	gnr::forwarder<int(int), sizeof(add1)>                       f_add1_memfun(add1);          // memfun is similar to cref
 	std::cout << f_add1(7)     << std::endl;
 	std::cout << f_add1_ref(7) << std::endl;
 	std::cout << f_add1_memfun(7) << std::endl;
@@ -104,8 +104,8 @@ int main()
 	std::cout << "sizeof(f_add1_ref): "    << sizeof(f_add1_ref)    << std::endl;
 	std::cout << "sizeof(f_add1_memfun): " << sizeof(f_add1_memfun) << std::endl;
 	
-	//gnr::forwarder<int(int), sizeof(decltype(gnr::mem_fun<MEM_FUN(A::add_offset_twice)>(adder)))> f_add2(gnr::mem_fun<MEM_FUN(A::add_offset_twice)>(adder));
-	auto f_add2 = makeForwarder<MEM_FUN(A::add_offset_twice)>(adder);
+	//gnr::forwarder<int(int), sizeof(decltype(gnr::memfun<MEMFUN(A::add_offset_twice)>(adder)))> f_add2(gnr::memfun<MEMFUN(A::add_offset_twice)>(adder));
+	auto f_add2 = makeForwarder<MEMFUN(A::add_offset_twice)>(adder);
 	std::cout << f_add2(7) << std::endl;
 	std::cout << "sizeof(f_add2): "     << sizeof(f_add2)     << std::endl;
     }
@@ -115,12 +115,12 @@ int main()
     {
 	int i = 1;
 	RefIncrementer ri(i);
-	auto refinc = gnr::mem_fun<MEM_FUN(RefIncrementer::increment)>(ri);
+	auto refinc = gnr::memfun<MEMFUN(RefIncrementer::increment)>(ri);
 	refinc();
 	std::cout << i << std::endl;
 
-	//gnr::forwarder<void(), sizeof(decltype(gnr::mem_fun<MEM_FUN(RefIncrementer::increment)>(ri)))> f_refinc_memfun(gnr::mem_fun<MEM_FUN(RefIncrementer::increment)>(ri));
-	auto f_refinc_memfun = makeForwarder<MEM_FUN(RefIncrementer::increment)>(ri);
+	//gnr::forwarder<void(), sizeof(decltype(gnr::memfun<MEMFUN(RefIncrementer::increment)>(ri)))> f_refinc_memfun(gnr::memfun<MEMFUN(RefIncrementer::increment)>(ri));
+	auto f_refinc_memfun = makeForwarder<MEMFUN(RefIncrementer::increment)>(ri);
 	f_refinc_memfun();
 	std::cout << i << std::endl;
 	std::cout << "sizeof(f_refinc_memfun): " << sizeof(f_refinc_memfun)        << std::endl;
@@ -130,7 +130,7 @@ int main()
 
     {
 	const A adder(1);
-	auto  f = makeForwarder<MEM_FUN(A::add_offset_twice)>(adder);
+	auto  f = makeForwarder<MEMFUN(A::add_offset_twice)>(adder);
     }
 
     {
