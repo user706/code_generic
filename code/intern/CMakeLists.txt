@@ -1,5 +1,3 @@
-add_subdirectory(override_new)
-
 function(create_symlink target_exe_name)
   add_custom_command(
     TARGET     ${target_exe_name}
@@ -7,6 +5,10 @@ function(create_symlink target_exe_name)
     COMMAND   "${CMAKE_COMMAND}" "-E" "create_symlink" "${CMAKE_CURRENT_BINARY_DIR}/${target_exe_name}" "${CMAKE_BINARY_DIR}/${target_exe_name}"
     )
 endfunction()
+
+add_subdirectory(memfun_benchmark)
+add_subdirectory(override_new)
+
 
 
 add_executable(       go main.cpp)
