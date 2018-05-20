@@ -7,8 +7,8 @@ function(create_symlink target_exe_name)
 endfunction()
 
 add_subdirectory(memfun_benchmark)
+add_subdirectory(function_benchmark)
 add_subdirectory(override_new)
-
 
 
 add_executable(       go main.cpp)
